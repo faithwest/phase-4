@@ -1,8 +1,7 @@
 from sqlalachemy.orm import declarative_base, validates
 from sqlalachemy import Column,BigInteger,Integer,String,DateTime,Boolean,Enum
-from datetime import datetime--comes with it
+from datetime import datetime
 from sqlalachemy import engine
---engine import
 
 Base=declarative_base()
 
@@ -10,7 +9,7 @@ db_url=
 
 engine=create_engine(db_url)
 
-Class GenderEnum(Enum)--whatever you have in this class will work as a string
+Class GenderEnum(Enum)#whatever you have in this class will work as a string
     male='male'
     female='female'
     other='other'
@@ -65,53 +64,4 @@ male_students=Students.get_male_students(session)
 for student in male_students:
     print(student.name,'',student.email)
 session.close()    
-'''
-############################################################################
-'''
-     POSTGRESS
-pipenv install psycogy-binary(postgre)/pipenv install psycopg2
-
-     ALEMBIC CONFIGURATIONS
-alembic init migrations
-ALEMBIC.INI corrections
-edit the alembic.ini 
-connection to database,(LQxqLTuAuT/29?#)
-go to postgress instance:superbase:
-copy url(database settings>>connection string)>>sql alchemy url and password line
-delete table(ensure the supabase is empty:postgre instance is empty)
-
-      ENVY.PY
-import the models:knows which database to use(19)from model import base
-target_metadata=base.metadata
-
-       models
-import sqlalachemy.orm import declarative_base
-from sqlalachemy import BigInt,Interger,String,DataTime
-from datetime import datetime(comes with it)
-Base=declarative_base()
-class Student(Base):
-__tablename__="Student"
-
-       run migrations
-alembic revision --autogenerate -m 'Create student model' >>get a version/key/creates a table automatically
-we wont see our students--if it makes sense then upgrade<upgrade head> 
-alembic upgread heads>connect db, and create table students
-alembic revision --autogenerate -m 'added gender'
-alembic upgrade heads
-python3 model.py>python
-sqlquery>
-
-    CONSTRAINTS
-runs the validation
-valid if you use the model ONLY but doeas not apply to database
-can add them manually to the database
-
-       ISSUES
-deactivate all virtual environments
-
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-SQLLITE
-installations= pipenv install sqlalchemy alembic
-create table
 '''
