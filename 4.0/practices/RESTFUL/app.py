@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate  # Corrected import
+from flask_migrate import Migrate  
 from models import db, Book, Customer, Author
 
 app = Flask(__name__)
