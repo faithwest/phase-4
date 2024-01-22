@@ -1,11 +1,13 @@
 from faker import Faker
 from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
 from models import db, Pizza, Restaurant, RestaurantPizza
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///pizza.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
+
 fake = Faker()
 
 
@@ -37,5 +39,6 @@ def seed_data():
 
         db.session.commit()
 if __name__ == '__main__':
+    seed_data()
     print("Seeding started -----")
     print("Seeded successfully")

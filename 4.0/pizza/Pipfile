@@ -1,15 +1,9 @@
 [[source]]
-"proxy": "http://127.0.0.1:5555",
-
+url = "https://pypi.org/simple"
 verify_ssl = true
 name = "pypi"
 
 [packages]
-flask = "*"
-flask-migrate = "*"
-flask-restful = "*"
-flask-sqlalchemy = "*"
-faker = "*"
 
 [dev-packages]
 

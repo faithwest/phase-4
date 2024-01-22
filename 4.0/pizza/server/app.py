@@ -48,5 +48,41 @@ def create_restaurant_pizza():
     except ValueError as e:
         return jsonify({'errors': [str(e)]}), 400
 
+#RESTAURANTPIZZAS
+@app.route('/restaurant_pizzas', methods=['POST'])
+def create_restaurant_pizzas():
+    data = request.get_json()
+    price = data.get('price')
+    pizza_id = data.get('pizza_id')
+    restaurant_id = data.get('restaurant_id')
+
+    if not all([price, pizza_id, restaurant_id]):
+        return jsonify({"errors": ["validation errors"]}), 400
+
+    pizza = Pizza.query.get(pizza_id)
+    restaurant = Restaurant.query.get(restaurant_id)
+
+    if not (pizza and restaurant):
+        return jsonify({"errors": ["validation errors"]}), 400
+
+    restaurant_pizza = Restaurant_pizza(price=price, pizza=pizza, restaurant=restaurant)
+
+    try:
+        db.session.add(restaurant_pizza)
+        db.session.commit()
+        return jsonify({"id": pizza.id, "name": pizza.name, "ingredients": pizza.ingredients})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"errors": [str(e)]}), 500
+    
+@app.route('/restaurant_pizza', methods=['GET'])
+def read_restaurant_pizza():
+    restaurant_pizza = Restaurant_pizza.query.all()
+    pizza_list = [{"price": rp.price, "pizza": rp.pizza.to_dict(), "restaurant": rp.restaurant.to_dict()} for rp in restaurant_pizza]
+    return jsonify(pizza_list)
+
+
+
+
 if __name__ == '__main__':
-    app.run(port=5555,debug=True)
+    app.run(port=6000,debug=True)

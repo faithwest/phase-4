@@ -6,7 +6,7 @@ function RestaurantDescription() {
   const { id } = useParams();
 
   useEffect(() => {
-    fetch(`/restaurants/${id}`)
+    fetch(`/restaurant_pizza`)
       .then((response) => response.json())
       .then((data) => setRestaurant(data))
       .catch((error) => console.error("Error fetching restaurant:", error));

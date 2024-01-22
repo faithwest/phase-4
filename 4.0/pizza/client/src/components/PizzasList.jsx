@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 
 const PizzasList = () => {
   const [pizzas, setPizzas] = useState([]);
@@ -7,21 +6,17 @@ const PizzasList = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchData = () => {
-      axios.get('http://127.0.0.1:5555/pizzas')
-        .then(response => {
-          setPizzas(response.data);
-        })
-        .catch(error => {
-          setError(error.message);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    };
-
-    fetchData();
-  }, []);
+    fetch('/pizzas')
+      .then(response => response.json())
+      .then(data => {
+        setPizzas(data);
+        setLoading(false);
+      })
+      .catch(error => {
+        setError(error.message);
+        setLoading(false);
+      });
+  }, []); // Provide an empty dependency array
 
   return (
     <div>
@@ -32,13 +27,13 @@ const PizzasList = () => {
         <ul>
           {pizzas.map((pizza) => (
             <li key={pizza.id}>
-              <strong>{pizza.name}{pizza.price}{pizza.restaurant}</strong> - {pizza.ingredients}
+              <strong>{pizza.name} {pizza.price} {pizza.restaurant}</strong> - {pizza.ingredients}
             </li>
           ))}
         </ul>
       )}
     </div>
   );
-};
+}
 
 export default PizzasList;
