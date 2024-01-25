@@ -1,161 +1,93 @@
-
-initial_board = [
-    [" ", "W", "B ", "W", " ", "W", " ", "W"],
-    ["W", " ", "W", " ", "W", " ", "W", " "],
-    [" ", "W", " ", "W", " ", "W", " ", "W"],
-    [" ", " ", "", " ", " ", " ", " ", " "],
-    [" ", " ", " ", " W", " ", " ", "", " "],
-    ["B", " ", "B", " ", "B", " ", "B", " "],
-    [" ", "B", " ", "B", " ", "B", " ", "B"],
-    ["B", " ", "WK", " ", "B", " ", "B", " "],
-]
-class GameEngine:
-    def __init__(self, board):
+class Moves:
+    def __init__(self, board, all_moves, piece, co):
         self.board = board
+        self.all_moves = all_moves
+        self.piece = piece
+        self.co = co
+        self.to_capture = True  # Assuming you want to capture by default, modify as needed
 
-    def is_valid_move(self, co):
-        x, y = co
+    def moves(self):
+        all_moves = []
 
-        if self.board[x][y] != "W":
-            return []
+        if self.board[self.co["y"]][self.co["x"]] != self.piece:
+            print("Piece not found")
+            return all_moves
 
-        validated_moves = []
+        for m in self.all_moves:
+            to = m["to"]
+            capture = m.get("capture")
 
+            y_move = to["y"] + self.co["y"]
+            x_move = to["x"] + self.co["x"]
 
-        for dx, dy in [(1, -1), (1, 1)]:
-            nx, ny = x + dx, y + dy
-            if 0 <= nx < 7 and 0 <= ny < 7:
-                if self.board[nx][ny] == " ":
-                    validated_moves.append((nx, ny))  # Regular move
-                    print(validated_moves)
-                elif self.board[nx][ny] == "B" and 0 <= nx + dx < 7 and 0 <= ny + dy < 7 and self.board[nx + dx][ny + dy] == " ":
-                    validated_moves.append((nx + dx, ny + dy))  # Capture move
-
-        return validated_moves
-        
-
-    def display_board_with_possible_moves(self, possible_moves):
-        board_with_indicators = [row[:] for row in self.board]
-        for x, y in possible_moves:
-            board_with_indicators[x][y] = "x"
-        return board_with_indicators
-
-if __name__ == "__main__":
-    game_engine = GameEngine(initial_board)
-    
-    start_position = (2, 3)
-    possible_moves = game_engine.is_valid_move(start_position)
-
-    board_with_indicators = game_engine.display_board_with_possible_moves(possible_moves)
-
-    # Print the board with indicators
-    for row in board_with_indicators:
-        print(" ".join(row))
-
-
-class BlackMove:
-    def __init__(self, board):
-        self.board = board
-
-    def is_valid_move(self, co):
-        x, y = co
-
-        if self.board[x][y] != "B":
-            return []
-
-        validated_moves = []
-
-        for dx, dy in [(-1, 1), (-1, -1)]:
-            nx, ny = x + dx, y + dy
-            if 0 <= nx < 7 and 0 <= ny < 7:
-                if self.board[nx][ny] == " ":
-                    validated_moves.append((nx, ny))  # Regular move
-                elif self.board[nx][ny] == "W" and 0 <= nx + dx < 7 and 0 <= ny + dy < 7 and self.board[nx + dx][ny + dy] == " ":
-                    # Capture move
-                    validated_moves.append((nx + dx, ny + dy))
-
-        return validated_moves
-
-    def display_board_with_possible_moves(self, possible_moves):
-        board_with_indicators = [row[:] for row in self.board]
-        for x, y in possible_moves:
-            board_with_indicators[x][y] = "O"
-        return board_with_indicators
-
-if __name__ == "__main__":
-    
-
-    black = BlackMove(initial_board)
-    start_position = (5, 2)
-    possible_moves = black.is_valid_move(start_position)
-    board_with_indicators = black.display_board_with_possible_moves(possible_moves)
-
-    # Print the board with indicators
-    for row in board_with_indicators:
-        print(" ".join(row))
-
-class WhiteKing:
-    def __init__(self, board):
-        self.board=board
-
-
-    def wk_move(self, co):
-        x, y = co
-        if self.board[7][y] == "W":
-            self.board[7][y] = "WK"
-            print("KING PROMOTION")
-        else:
-            print("invalid Coordinates")
-        moves = [
-            {"x": -2, "y": 2}, 
-            {"x": -2, "y": -2},
-        ]
-        wk_moves=[]
-
-        for move in moves:
-            x_move = x + move["x"]
-            y_move = y + move["y"]
-
-            if not (0 <= y_move < 7 and 0 <= x_move < 7):
+            if not (0 <= x_move <= 7 and 0 <= y_move <= 7):
                 continue
-            wk_moves.append((x_move, y_move))
-            print("Possible move: (", x_move,  ",", y_move, ")", sep="")
-        return wk_moves
 
-class BlackKing:
-    def __init__(self, board):
-        self.board = board
+            move_position = self.board[y_move][x_move]
+            if move_position:
+                continue
 
-    def bk_move(self, co):
-        x, y = co
-        if self.board[0][y] == "B":  # Check for row 0
-            self.board[0][y] = "BK"  # Update board with promoted king
-            print("KING PROMOTION")
-        else:
-            print("invalid Coordinates")
+            doc = {
+                "from": {"x": self.co["x"], "y": self.co["y"]},
+                "to": {"x": x_move, "y": y_move},
+            }
 
-        moves = [
-            {"x": -2, "y": -2},
-            {"x": -2, "y": 2},
-            {"x": 2, y: 0}
+            if capture:
+                result = self.handle_capture(capture, x_move, y_move)
+                if result:
+                    doc["capture"] = result
+                    all_moves.append(doc)
+                continue
+
+            all_moves.append({**doc, "capture": False})
+
+        return all_moves
+    class Wmoves(Moves):
+        def __init__(self, board, co):
+            all_moves = [
+            {"to": {"x": 1, "y": 1}, "capture": False},
+            {"to": {"x": -1, "y": 1}, "capture": False},
+            {"to": {"x": 2, "y": 2}, "capture": {"x": -1, "y": -1}},
+            {"to": {"x": -2, "y": 2}, "capture": {"x": 1, "y": -1}},
         ]
-        bk_moves = []
+        super().__init__(board, all_moves, "W", co)
+    
 
-        for move in moves:
-            x_move = x + move["x"]
-            y_move = y + move["y"]
+    def handle_capture(self, capture, x_move, y_move):
+        if not self.to_capture:
+            return None
 
-            if (0 <= y_move < 7 and 0 <= x_move < 7):
-                #continue
-                bk_moves.append((x_move, y_move))
-                print("Possible move: (", x_move, ",", y_move, ")", sep="")
-            return bk_moves
+        x = capture["x"]
+        y = capture["y"]
+        cap_x = x_move + x
+        cap_y = y_move + y
 
+        if not (0 <= cap_x <= 7 and 0 <= cap_y <= 7):
+            return None
 
-if __name__ == "__main__":
-    blackking = BlackKing(initial_board)
-    bk_moves = blackking.bk_move((1, 1))  # Example move to trigger promotion
-    chosen_move = bk_moves[0]  # Example: Choose the first move
-    self.board[chosen_move[0]][chosen_move[1]] = "BK"  # Apply the move
+        capture_position = self.board[cap_y][cap_x]
+        if capture_position in self.to_capture:
+            return {"x": cap_x, "y": cap_y}
 
-    print(initial_board)
+        return None
+# Assuming the piece is a white piece, and you have an instance of Wmoves
+w_moves_instance = Wmoves(board, {"x": 5, "y": 2})
+
+# Call the moves method
+all_w_moves = w_moves_instance.moves()
+
+# The target position for checking
+target_position = {"x": 4, "y": 3}
+
+# Check if the target position is in the list of possible moves
+matching_move = next((move for move in all_w_moves if move["to"] == target_position), None)
+
+if matching_move:
+    if matching_move["capture"]:
+        print("It's a capture move!")
+    elif matching_move["to"] in all_Wmoves:
+        print("It's a king move!")
+    else:
+        print("It's a normal move!")
+else:
+    print("The target position is not a valid move.")
