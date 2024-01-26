@@ -1,0 +1,3 @@
+    Backtracking is finding the solution to a problem whereby the solution depends on the previous step.
+    if we make a step and the solution is correct we proceed ,id the step is wrong then we retieve and find another correct step.
+    the idea is to come back and correct the wrong step and proceed if its correct.
