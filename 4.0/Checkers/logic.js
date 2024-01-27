@@ -28,21 +28,5 @@ class UpdateBoard {
       return this.board;
     }
   
-    anlizeBoard() {
-      let B = 0;
-      let W = 7;
   
-      let blackArr = this.board[B];
-      let whiteArr = this.board[W];
-  
-      // Black Piece
-      for (let i = 0; i < blackArr.length; i++) {
-        let piece = blackArr[i];
-        if (piece === "B") {
-          this.board[B][i] = "KB";
-        }
-      }
-    }
-  }
-  
-  module.exports = UpdateBoard;
+  //module.exports = UpdateBoard;
