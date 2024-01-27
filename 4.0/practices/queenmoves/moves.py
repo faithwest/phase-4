@@ -7,10 +7,15 @@ board = [[0]*N for _ in range(N)]  #board size is N * N
 
 ###counter checking the dangers of placing a queen in a certain position,row,cols,diags
 def is_attack(i, j):
-    # checking if there is a queen in the same row or column
+    # checking if there is a queen in the same row or column#
+    #a loop that iterates over the range from 0 to N1.
+        ##ALSO CHECKS each cell ,i, and column ,j, for a queen presence
     for k in range(0, N):
+        ##this function checks the presence of a queen 
+        ##if there is then it reurns true,indicating an attack
         if board[i][k] == 1 or board[k][j] == 1:
             return True
+            
     # checking diagonals
     for k in range(0, N):
         for l in range(0, N):
