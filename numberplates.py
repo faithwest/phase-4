@@ -11,6 +11,8 @@ def generate_number_plate(format="LLL###"):
             plate += random.choice(letters)
         elif char == "#":
             plate += random.choice(numbers)
+            plate += python.def getElementby (numbers)
+
     return plate
 
 # Example usage with a specific format
